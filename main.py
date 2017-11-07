@@ -1,3 +1,6 @@
+import csv
+import numpy as np
+
 class Transcript:
     def __init__(self):
         self.name = None
@@ -29,17 +32,24 @@ def main():
                 transcripts[t.name] = t
 
     # http://salmon.readthedocs.io/en/latest/file_formats.html#equivalence-class-file
-    with open("eq_classes.txt") as eqc:
-        reader = csv.reader(eqc, dialect="excel-tab")
-        N = int(next(reader)[0])
-        M = int(next(reader)[0])
-        names = reader[:N] # take N transcript names
-        eq_classes = reader[:M] # take M equivalence classes
+    #with open("eq_classes.txt") as eqc:
+        # reader = csv.reader(eqc, dialect="excel-tab")
+        # N = int(next(reader)[0])
+        # M = int(next(reader)[0])
+        # names = reader[:N] # take N transcript names
+        # eq_classes = reader[:M] # take M equivalence classes
+# 
+            # transcriptCount = eq_classes[0]
+            # scripts = eq_classes[1:-2]
+            # fragmentCount = eq_classes[-1]
 
-            transcriptCount = eq_classes[0]
-            scripts = eq_classes[1:-2]
-            fragmentCount = eq_classes[-1]
+    tsLengths = [v.length for k, v in transcripts.items()]
+    avgLength = np.mean(tsLengths)
+    sigmaLength = np.std(tsLengths)
             
+    upperBnd = avgLength + 2 * sigmaLength
+    lowerBnd = avgLength - 2 * sigmaLength
+    tvLength = map (lambda x: x > upperBnd or x < lowerBnd, tsLengths)
 
 
 if __name__ == "__main__": main()
